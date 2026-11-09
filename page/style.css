@@ -1,0 +1,34 @@
+body { max-width: 1080px; margin: auto; padding-bottom: 28px; }
+header, .section-head, .row, footer { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+header { margin-bottom: 14px; }
+h1 { font-size: 20px; }
+h2 { margin-bottom: 5px; }
+section { margin: 22px 0; }
+.card { background: var(--magpie-card, Canvas); border: 1px solid var(--magpie-line, #ddd); border-radius: 9px; padding: 16px; margin: 12px 0; }
+.section-head { margin-bottom: 12px; }
+.switch { display: inline-flex; align-items: center; gap: 6px; white-space: nowrap; cursor: pointer; }
+input[type=checkbox] { accent-color: var(--magpie-accent, #4979bd); width: 14px; height: 14px; }
+button { cursor: pointer; min-height: 30px; }
+button:disabled { cursor: default; }
+.picker { margin: 8px 0 12px; }
+.picker label, .field-label { display: block; font-weight: 500; margin-bottom: 5px; }
+.picker-search { width: 100%; margin-bottom: 6px; box-sizing: border-box; }
+.picker select { width: 100%; min-height: 32px; box-sizing: border-box; }
+.selected-models { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 7px; }
+.selected-models button { text-align: left; overflow-wrap: anywhere; min-height: 26px; }
+.rule-name { flex: 1; min-width: 100px; font-weight: 600; }
+.rule-actions { display: flex; gap: 5px; }
+.profile { margin: 12px 0; width: 100%; min-height: 32px; }
+.code { width: 100%; box-sizing: border-box; min-height: 160px; resize: vertical; font: 12px/1.6 var(--magpie-code, Consolas, monospace); tab-size: 2; margin: 8px 0; }
+.examples { display: flex; gap: 6px; flex-wrap: wrap; }
+.help { margin-top: 20px; padding-top: 12px; border-top: 1px solid var(--magpie-line, #ddd); }
+.help summary { cursor: pointer; margin-bottom: 10px; }
+.help p { max-width: 82ch; }
+footer { position: sticky; bottom: 0; background: var(--magpie-bg, Canvas); border-top: 1px solid var(--magpie-line, #ddd); padding: 12px 0; margin-top: 24px; justify-content: flex-end; flex-wrap: wrap; }
+#dirty { margin-right: auto; }
+.primary { color: var(--magpie-accent, #2466aa); background: var(--magpie-accent-soft, #e9f0fc); border-color: transparent; font-weight: 600; }
+#status { min-height: 20px; overflow-wrap: anywhere; }
+#status[data-error=true] { color: #ce4b46; }
+.small { font-size: 12px; }
+.profile-note { margin-top: -5px; }
+@media (max-width: 580px) { header, .section-head { align-items: flex-start; flex-wrap: wrap; } body { padding: 14px; } .card { padding: 12px; } footer { gap: 6px; } }

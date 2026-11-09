@@ -1,0 +1,64 @@
+{
+  "name": "magpie-review-rules",
+  "version": "1.1.0",
+  "license": "MIT",
+  "keywords": [
+    "magpie-plugin",
+    "claude-desktop",
+    "middleware"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "files": [
+    "engine.js",
+    "middleware.js",
+    "host.mjs",
+    "install.ps1",
+    "page/index.html",
+    "page/app.js",
+    "page/style.css",
+    "page/icon.svg"
+  ],
+  "type": "module",
+  "description": "Configurable Claude action reviewer and model compatibility rules for Magpie.",
+  "main": "host.mjs",
+  "scripts": {
+    "test": "node --test test/*.test.mjs",
+    "test:install": "node test/smoke-install.mjs"
+  },
+  "magpie": {
+    "middleware": "middleware.js",
+    "page": {
+      "title": "Review & model rules",
+      "titles": {
+        "zh": "审核与模型规则",
+        "zh-TW": "審核與模型規則"
+      },
+      "file": "page/index.html",
+      "icon": "page/icon.svg"
+    },
+    "actions": [
+      {
+        "id": "review-rules",
+        "menu": "agent",
+        "title": "Review & model rules",
+        "titles": {
+          "zh": "审核与模型规则"
+        }
+      },
+      {
+        "id": "model-rules",
+        "menu": "provider",
+        "title": "Model compatibility rules",
+        "titles": {
+          "zh": "模型兼容规则"
+        }
+      }
+    ],
+    "permissions": []
+  }
+}

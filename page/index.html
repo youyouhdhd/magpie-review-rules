@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>审核与模型规则</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="_magpie/bridge.js"></script>
+  <script src="catalog.js"></script>
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <header>
+    <div><h1>审核与模型规则</h1><p class="muted">为 Claude Desktop 固定操作审核模型，并按实际模型能力适配请求。</p></div>
+    <label class="switch"><input id="enabled" type="checkbox">启用插件规则</label>
+  </header>
+  <p id="status" role="status" aria-live="polite">正在连接 Magpie…</p>
+  <main id="content" hidden>
+    <section class="card">
+      <div class="section-head"><div><h2>自动模式审核</h2><p class="muted">只改变操作审核请求的模型。普通对话继续使用 Desktop 中选择的模型。</p></div><label class="switch"><input id="reviewer-enabled" type="checkbox">固定审核模型</label></div>
+      <div id="reviewer-picker"></div>
+      <p class="muted small">首次安装默认不固定审核模型，也不添加兼容规则。请先选择能返回 Claude 判定格式的模型，再保存配置。</p>
+    </section>
+    <section>
+      <div class="section-head"><div><h2>模型兼容规则</h2><p class="muted">为第三方别名指定实际的 Claude 规则；命中多条时按显示顺序执行。</p></div><button id="add-rule" type="button">＋ 添加规则</button></div>
+      <p class="muted small">规则绑定具体供应商的模型。使用路由组时，会按实际回答的模型匹配；Claude 预设适用于 Anthropic Messages 接口。</p>
+      <div id="rules"></div>
+      <p id="empty-rules" class="muted" hidden>没有兼容规则。可保留固定审核模型，单独使用这一功能。</p>
+    </section>
+    <details class="help"><summary>自定义规则怎样运行？</summary><p>选择目标模型后，JavaScript 在请求路由到该模型时运行。可修改 <code>body</code>，也可返回新的请求对象。<code>ctx</code> 提供 agent、protocol、provider、model、review；<code>ctx.review</code> 表示操作审核请求。</p><p>代码在 Magpie 的 JavaScript 沙箱中运行，不能访问网络或本地文件。单次规则有 250 ms 时限；运行异常或超时按 Magpie 的机制保留原请求，并记录到插件状态。</p></details>
+    <footer><span id="dirty" class="muted"></span><button id="reload-models" type="button">刷新模型列表</button><button id="revert" type="button">放弃未保存修改</button><button id="save" class="primary" type="button">保存并应用</button></footer>
+    <p class="muted small" id="catalog-status"></p>
+  </main>
+</body>
+</html>
