@@ -1,10 +1,15 @@
 # Claude Desktop 审核与模型规则
 
-版本：v1.7  
+版本：v1.8  
 初版时间：2026-11-09 18:52:50（UTC+08:00，Asia/Shanghai）  
-最后更新时间：2026-11-10 20:00:45（UTC+08:00，Asia/Shanghai）  
+最后更新时间：2026-11-10 21:00:24（UTC+08:00，Asia/Shanghai）  
 版本修改记录：
-- v1.7：移除个人身份字段和发布过程资料，精简发行文件，增加打包隐私检查。
+
+<details>
+<summary>文档信息</summary>
+
+- v1.8：精简公开使用说明，折叠文档版本信息。
+- v1.7：精简发行文件并增加发行检查。
 - v1.6：统一 Claude Desktop 显示名称。
 - v1.5：缓存规则编译结果，增加规则变更及语法错误恢复测试。
 - v1.4：补充公开版本安装验证。
@@ -12,6 +17,8 @@
 - v1.2：完善安装与反馈说明。
 - v1.1：采用通用默认配置、MIT 许可证和发行文件白名单。
 - v1.0：提供审核模型选择、Claude 参数预设和自定义规则页面。
+
+</details>
 
 **Claude Desktop Review & Model Rules** is a Magpie plugin for choosing Claude Desktop's action-review model independently of its conversation model. It also supports explicit model compatibility presets and optional sandboxed JavaScript rules. Fresh installs do not rewrite requests until configured.
 
@@ -79,7 +86,6 @@ return body;
 - 配置由 Magpie 保存，插件不上传配置或会话，不包含遥测。
 - 本机模型目录每 15 秒同步一次，只供配置页面使用；生成的 `page/catalog.js` 不提交、不打包。
 - npm 发行包仅包含运行文件、安装脚本、使用说明和许可证。
-- 发行包不包含个人作者字段、账号状态、机器路径、发布过程记录或测试日志。
 - Git 忽略本机模型目录、凭据配置、日志和压缩包。请使用 `npm pack` 制作发行包。
 - 模型目录写入插件安装目录，该目录需要可写。
 
@@ -93,7 +99,7 @@ npm pack
 npm run test:install -- --magpie "<magpie-executable>"
 ```
 
-打包前自动执行规则与隐私检查。隔离安装测试使用独立配置和本机模拟接口，不读取个人账号，不调用付费模型。测试日志留在临时测试目录，不进入发行包。
+打包前自动执行发行检查。隔离安装测试使用独立配置和本机模拟接口，日志留在临时测试目录。
 
 ## 社区发现与卸载
 
