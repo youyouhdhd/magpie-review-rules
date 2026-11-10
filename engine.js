@@ -80,12 +80,33 @@ export function compileRule(rule) {
   catch (error) { throw new Error(`规则「${rule.name}」语法错误：${error.message}`); }
 }
 
+let compiledKey, compiled, compilationError;
+
+// Magpie reuses each sandbox; keep only the current rules, never request data.
+export function prepareRules(rules) {
+  const key = JSON.stringify(rules);
+  if (key !== compiledKey) {
+    const next = new Map();
+    let failure;
+    try {
+      for (const rule of rules) {
+        if (rule.enabled && (rule.customEnabled || rule.profile === "custom") && !next.has(rule.code)) next.set(rule.code, compileRule(rule));
+      }
+    } catch (error) { failure = error; }
+    compiledKey = key;
+    compiled = next;
+    compilationError = failure;
+  }
+  if (compilationError) throw compilationError;
+  return compiled;
+}
+
 export function onRequest(body, ctx) {
   if (ctx.agent !== "claude-desktop" || ctx.protocol !== "anthropic") return;
   try {
     const config = settings(ctx.options);
     if (!config.enabled) return;
-    for (const rule of config.rules) if (rule.enabled && (rule.customEnabled || rule.profile === "custom")) compileRule(rule);
+    prepareRules(config.rules);
     if (config.reviewerEnabled && isReview(body)) {
       body.model = config.reviewer;
       return body;
@@ -100,13 +121,14 @@ export function onProvider(body, ctx) {
   if (ctx.agent !== "claude-desktop" || ctx.protocol !== "anthropic" || !ctx.provider) return;
   const config = settings(ctx.options);
   if (!config.enabled) return;
+  const functions = prepareRules(config.rules);
   const model = `${ctx.provider.id}/${ctx.provider.model}`;
   const matches = config.rules.filter(rule => rule.enabled && rule.models.includes(model));
   if (!matches.length) return;
   for (const rule of matches) {
     body = applyClaude(body, rule.profile);
     if (rule.customEnabled || rule.profile === "custom") {
-      const result = compileRule(rule)(body, {
+      const result = functions.get(rule.code)(body, {
         agent: ctx.agent, protocol: ctx.protocol, provider: { ...ctx.provider },
         model, review: isReview(body),
       });

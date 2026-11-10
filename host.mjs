@@ -1,6 +1,6 @@
 import { writeFile, rename } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
-import { defaults, profiles, settings, compileRule } from "./engine.js";
+import { defaults, profiles, settings, prepareRules } from "./engine.js";
 
 const catalogFile = fileURLToPath(new URL("./page/catalog.js", import.meta.url));
 let refreshing;
@@ -22,7 +22,7 @@ export async function refreshCatalog(options = {}) {
     } catch (cause) { error = `模型列表读取失败：${cause.message}`; }
     try {
       const config = settings(options);
-      for (const rule of config.rules) if (rule.enabled && (rule.customEnabled || rule.profile === "custom")) compileRule(rule);
+      prepareRules(config.rules);
     } catch (cause) { validation = cause.message; }
     const data = { models, error, validation, revision: options.revision, updatedAt: new Date().toISOString(), defaults, profiles };
     const js = `window.MagpieReviewCatalog = ${JSON.stringify(data).replaceAll("<", "\\u003c")};\nwindow.dispatchEvent(new Event("review-catalog"));\n`;

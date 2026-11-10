@@ -119,3 +119,56 @@ test("a custom rule must return JSON request data, not an async value or null", 
     assert.throws(() => onProvider(review(), provider("sonnet", options)), /必须返回/);
   }
 });
+
+test("custom code compiles once across requests and refreshes when rules change", async () => {
+  const engine = await import("../engine.js?compilation-cache");
+  const original = globalThis.Function;
+  let compilations = 0;
+  globalThis.Function = function (...args) { compilations++; return new original(...args); };
+  try {
+    const options = { reviewerEnabled: true, reviewer: "example/sonnet", rules: [{ ...rule, profile: "custom", code: "body.max_tokens = 128; return body;" }] };
+    for (let i = 0; i < 3; i++) {
+      const copy = structuredClone(options);
+      engine.onRequest(review(), ctx(copy));
+      assert.equal(engine.onProvider(review(), provider("sonnet", copy)).max_tokens, 128);
+    }
+    assert.equal(compilations, 1);
+    options.reviewer = "example/other";
+    engine.onRequest(review(), ctx(options));
+    assert.equal(compilations, 1);
+    options.rules[0].code = "body.max_tokens = 256; return body;";
+    engine.onRequest(review(), ctx(options));
+    assert.equal(engine.onProvider(review(), provider("sonnet", options)).max_tokens, 256);
+    assert.equal(compilations, 2);
+    options.rules = [];
+    assert.equal(engine.prepareRules(options.rules).size, 0);
+    options.rules = [{ ...rule, profile: "custom", code: "body.max_tokens = 128; return body;" }];
+    engine.onRequest(review(), ctx(options));
+    assert.equal(compilations, 3);
+  } finally { globalThis.Function = original; }
+});
+
+test("cached syntax failures still reject every request and recover after correction", async () => {
+  const engine = await import("../engine.js?syntax-cache");
+  const original = globalThis.Function;
+  let compilations = 0;
+  globalThis.Function = function (...args) { compilations++; return new original(...args); };
+  try {
+    const options = { rules: [{ ...rule, profile: "custom", code: "if (" }] };
+    const errors = [];
+    const reject = (status, message) => errors.push({ status, message });
+    for (let i = 0; i < 3; i++) engine.onRequest(review(), { ...ctx(structuredClone(options)), reject });
+    assert.equal(compilations, 1);
+    assert.equal(errors.length, 3);
+    assert.ok(errors.every(error => error.status === 400 && error.message.includes("Example Sonnet")));
+    options.rules[0].name = "Renamed rule";
+    engine.onRequest(review(), { ...ctx(options), reject });
+    assert.match(errors.at(-1).message, /Renamed rule/);
+    assert.equal(compilations, 2);
+    options.rules[0].code = "body.max_tokens = 512; return body;";
+    engine.onRequest(review(), { ...ctx(options), reject });
+    assert.equal(errors.length, 4);
+    assert.equal(engine.onProvider(review(), provider("sonnet", options)).max_tokens, 512);
+    assert.equal(compilations, 3);
+  } finally { globalThis.Function = original; }
+});
