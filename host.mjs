@@ -40,7 +40,7 @@ export default {
   async server(_input, options = {}) {
     await refreshCatalog(options);
     if (!timer) {
-      timer = setInterval(() => refreshCatalog(options).catch(error => console.warn(`Review rules: ${error.message}`)), 15000);
+      timer = setInterval(() => refreshCatalog(options).catch(error => console.warn(`Claude Desktop rules: ${error.message}`)), 15000);
       timer.unref();
     }
     return {};

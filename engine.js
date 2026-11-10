@@ -112,7 +112,7 @@ export function onRequest(body, ctx) {
       return body;
     }
   } catch (error) {
-    if (ctx.reject) ctx.reject(400, `审核与模型规则：${error.message}`);
+    if (ctx.reject) ctx.reject(400, `Claude Desktop 审核与模型规则：${error.message}`);
     else throw error;
   }
 }
