@@ -1,33 +1,20 @@
 {
   "name": "magpie-review-rules",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "license": "MIT",
-  "keywords": [
-    "magpie-plugin",
-    "claude-desktop",
-    "middleware"
-  ],
-  "publishConfig": {
-    "access": "public"
-  },
-  "engines": {
-    "node": ">=20"
-  },
+  "keywords": ["magpie-plugin", "claude-desktop", "middleware"],
+  "publishConfig": { "access": "public" },
+  "engines": { "node": ">=20" },
   "files": [
-    "engine.js",
-    "middleware.js",
-    "host.mjs",
-    "install.ps1",
-    "page/index.html",
-    "page/app.js",
-    "page/style.css",
-    "page/icon.svg"
+    "engine.js", "middleware.js", "host.mjs", "install.ps1",
+    "page/index.html", "page/app.js", "page/style.css", "page/icon.svg"
   ],
   "type": "module",
   "description": "Pin Claude Desktop's action reviewer and configure model compatibility rules in Magpie.",
   "main": "host.mjs",
   "scripts": {
     "test": "node --test test/*.test.mjs",
+    "prepack": "node --test test/*.test.mjs",
     "test:install": "node test/smoke-install.mjs"
   },
   "magpie": {
@@ -35,30 +22,13 @@
     "middleware": "middleware.js",
     "page": {
       "title": "Claude Desktop Review & Model Rules",
-      "titles": {
-        "zh": "Claude Desktop 审核与模型规则",
-        "zh-TW": "Claude Desktop 審核與模型規則"
-      },
+      "titles": { "zh": "Claude Desktop 审核与模型规则", "zh-TW": "Claude Desktop 審核與模型規則" },
       "file": "page/index.html",
       "icon": "page/icon.svg"
     },
     "actions": [
-      {
-        "id": "review-rules",
-        "menu": "agent",
-        "title": "Claude Desktop Review & Model Rules",
-        "titles": {
-          "zh": "Claude Desktop 审核与模型规则"
-        }
-      },
-      {
-        "id": "model-rules",
-        "menu": "provider",
-        "title": "Claude Desktop model compatibility rules",
-        "titles": {
-          "zh": "Claude Desktop 模型兼容规则"
-        }
-      }
+      { "id": "review-rules", "menu": "agent", "title": "Claude Desktop Review & Model Rules", "titles": { "zh": "Claude Desktop 审核与模型规则" } },
+      { "id": "model-rules", "menu": "provider", "title": "Claude Desktop model compatibility rules", "titles": { "zh": "Claude Desktop 模型兼容规则" } }
     ],
     "permissions": []
   }
